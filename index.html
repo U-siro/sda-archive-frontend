@@ -204,7 +204,7 @@ for (var index = page - 10; index < (parseInt(page) + parseInt(10)); index++) {
          
          }
          };
-         xhttp.open("GET", "listArticle.php?page=" + page + externalOption, true);
+         xhttp.open("GET", "https://api.sda.tr4.win/listArticle.php?page=" + page + externalOption, true);
          xhttp.send();
          
 
@@ -254,7 +254,7 @@ for (var index = page - 10; index < (parseInt(page) + parseInt(10)); index++) {
              $("#comments").html(response.comments);
          }
          JSON.parse(response.attachments).forEach(element => {
-             $("#attachments").append('<a href="http://49.165.223.140:231/' + id + '_' + element + '" download=' + element + '>' + element + '</a><br>');
+             $("#attachments").append('<a href="https://attachments.sda.tr4.win/' + id + '_' + element + '" download=' + element + '>' + element + '</a><br>');
          });
          document.getElementById("body").innerHTML = response.body;
          }
@@ -263,7 +263,7 @@ for (var index = page - 10; index < (parseInt(page) + parseInt(10)); index++) {
          
          }
          };
-         xhttp.open("GET", "read.php?id=" + id, true);
+         xhttp.open("GET", "https://api.sda.tr4.win/read.php?id=" + id, true);
          xhttp.send();
          
          }
