@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>SDA Archive Project</title>
+
+      
+
+<link rel="icon" type="image/x-icon" href="favicon.ico" />
+<link rel="icon" type="image/png" href="favicon.png" />
+<link rel="stylesheet" href="http://cafe.naver.com/static/css/main/css/line_sticker-1512652210000-9453.css" type="text/css">
+
+<link rel="stylesheet" href="http://cafe.naver.com/static/css/main/css/comment-1512652210000-16744.css" type="text/css">
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+   <script src="https://www.jqueryscript.net/demo/Fullscreen-Loading-Modal-Indicator-Plugin-For-jQuery-loadingModal/js/jquery.loadingModal.js"></script>
+      <link rel="stylesheet" href="https://www.jqueryscript.net/demo/Fullscreen-Loading-Modal-Indicator-Plugin-For-jQuery-loadingModal/css/jquery.loadingModal.css">
+      <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+      <style>
+
+          
+         .nocopyright{
+    color:gray;
+}
+
+.comment{
+    border-top: 1px solid skyblue;
+}
+
+.usernick{
+    border-bottom: 1px dotted gray;
+}
+
+.pageChooser{
+    text-align: center;
+    font-size: 25px;
+}
+
+         .articleListContainer{
+         margin: 0px 20% 0px 20%;
+         }
+
+
+
+
+
+#body img{
+    max-width: 470px;
+    height: auto !important;
+}
+
+#body *{
+    max-width: 470px !important;
+}
+
+.dedi{
+    display:none;
+}
+
+/* 거래 게시글 공백 삭제 */
+#body .comm-detail .image{
+    display: none;
+}
+
+.tag_n_id{
+    display: none;
+}
+
+.cafe_app_view{
+    display: none;
+}
+
+.linenote{
+    display: none;
+}
+
+.btns .m-tcol-c{
+    display: none;
+}
+
+         @media (max-width: 800px){
+
+             .pageChooser{
+                 font-size: 15px;
+             }
+            .articleListContainer{
+         margin: 0 0 0 0;
+         }
+
+.articleNum{
+    display:none;
+}
+
+.infoFrom{
+    display:none;
+}
+
+.table tr{
+    display: flex;
+    flex-direction: column;
+}
+
+.artitleTitle{
+border-top: 1px solid gray !important;
+}
+
+
+.colHelp{
+    display:none;
+}
+
+.dedi{
+    display:table-cell;
+}
+
+  .modal-dialog { max-width: none;
+  padding-left:none !important;
+  padding-right: none !important;
+   }
+
+
+
+         }
+
+      </style>
+      <script>
+          var externalOption = "";
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+};
+          $(function(){
+              listArticle(0);
+
+$('#exampleModal').on('hide.bs.modal', function (e) {
+    location.hash = "";
+})
+
+
+    $('#body img').load(function(){
+       var $img = $(this);
+       $img.attr('width', $img.width()).attr('height', $img.height());
+    });
+});
+
+function updateOption(){
+    externalOption = ""; // 비우기
+    var authorId = document.getElementById("authorIdsearch").value;
+    if(authorId){
+        externalOption = externalOption + "&author=" + authorId;
+    }
+    if(document.getElementById("copyrightCheck").value == "copyright"){
+        externalOption = externalOption + "&copyright_done=true";
+    }
+    listArticle(0);
+}
+function setAuthor(author){
+    document.getElementById("authorIdsearch").value = author;
+    updateOption();
+}
+function listArticle(page){
+
+
+         var xhttp = new XMLHttpRequest();
+         xhttp.onreadystatechange = function() {
+         if (this.readyState == 4 && this.status == 200) {
+         // Typical action to be performed when the document is ready:
+         var response = JSON.parse(xhttp.responseText);
+         if(response.status == "error"){
+            $('#errorModal').modal('show');
+
+                document.getElementById("errormodal").innerText = "오류가 발생하였습니다: " + response.error;
+
+         location.hash = "";
+         
+         } else {
+
+$('.article').each(function() {
+    $(this).remove();
+});
+
+response.result.forEach(response => {
+    $("#articleList").append('<tr class="article"><td class="articleNum">' + response.id + '</td><td class="articleTitle"><a ' + (response.copyright != 1 ? 'class="nocopyright"' : "") + ' href="#' + response.id + '">' + response.title + '</a></td><td class="infoFrom">' + (response.source == 0 ? "자체수집" : "유령회원 정해준") + '</td><td><a href="#" onclick="setAuthor(\'' + response.authorId + '\');">' + response.authorNick + "</a></td><td>" + response.uploadDate + "</td></tr>");
+
+});
+
+//아래쪽 페이지 네비게이션
+
+$(".pageChooser").html("");
+
+for (var index = page - 10; index < (parseInt(page) + parseInt(10)); index++) {
+
+    if(index > -1){
+        $(".pageChooser").append((parseInt(index) == parseInt(page) ? "<b>" : "") + '<a href="#page' + index + '">' + (index + 1) + "</a> " + (parseInt(index) == parseInt(page) ? "</b>"  : ""));
+    }
+    
+}
+
+         }
+         
+         
+         
+         }
+         };
+         xhttp.open("GET", "listArticle.php?page=" + page + externalOption, true);
+         xhttp.send();
+         
+
+
+
+}
+
+         function openArticle(id){
+         
+            var xhttp = new XMLHttpRequest();
+         xhttp.onreadystatechange = function() {
+         if (this.readyState == 4 && this.status == 200) {
+         // Typical action to be performed when the document is ready:
+         var response = JSON.parse(xhttp.responseText);
+         if(response.result == "error"){
+            $('#errorModal').modal('show');
+             if(response.error == "ENOARTICLE"){
+
+
+         document.getElementById("errormodal").innerText = "없는 게시물 번호입니다.";
+             } else if(response.error == "ENOCOPYRIGHT"){
+                document.getElementById("errormodal").innerText = "저작권 동의가 완료되지 않은 게시물입니다.";
+             } else {
+                document.getElementById("errormodal").innerText = "오류가 발생하였습니다: " + response.error;
+
+             }
+         location.hash = "";
+         
+         } else {
+         //alert("성공적으로 게시물을 읽어왔습니다.");
+         $('#exampleModal').modal('show');
+         document.getElementById("articleTitle").innerText = response.title;
+         document.getElementById("authorNick").innerText = response.author.nick;
+         document.getElementById("authorId").innerText = response.author.id;
+         document.getElementById("uploaddate").innerText = response.uploadDate;
+         $("#attachments").html("");
+         $("#comments").html("");
+         //해준님 자료는 HTML, 자체수집은 JSON임
+         if(response.source == 0){
+             // 자체수집
+             
+         JSON.parse(response.comments).result.list.forEach(element => {
+             $("#comments").append('<div class="comment"><div class="usernick"><a href="#" onclick="setAuthor(\'' + element.writerid + '\');">' + element.writernick + '</a></div><div class="commentContent">' + element.content.replaceAll("cafe.naver.com/skydevelopers/", "sda.tr4.win/#") + "</div></div>");
+         });
+         } else {
+             //해준님 자료
+             $("#comments").html(response.comments);
+         }
+         JSON.parse(response.attachments).forEach(element => {
+             $("#attachments").append('<a href="http://49.165.223.140:231/' + id + '_' + element + '" download=' + element + '>' + element + '</a><br>');
+         });
+         document.getElementById("body").innerHTML = response.body;
+         }
+         
+         
+         
+         }
+         };
+         xhttp.open("GET", "read.php?id=" + id, true);
+         xhttp.send();
+         
+         }
+         
+         function closeArticle(){
+             $('#exampleModal').modal('hide');
+         }
+
+         window.onhashchange = function () {
+            if(location.hash){
+                if(location.hash.startsWith("#page")){
+                    listArticle(location.hash.replace("#page", ""));
+                } else {
+                   openArticle(location.hash.replace("#", ""));
+                }
+}
+};
+
+if(location.hash){
+    openArticle(location.hash.replace("#", ""));
+}
+
+
+      </script>
+   </head>
+   <body>
+<center>
+    <a href="?"><img src="favicon.png"></a><br>
+</center>
+         <div class="articleListContainer">
+            <table id="articleList" class="table table-sm">
+               <tr class="colHelp">
+                  <th class="articleNum">글 번호</th>
+                  <th>제목</th>
+                  <th class="infoFrom">자료 출처</th>
+                  <th>작성자</th>
+                  <th>게시일</th>
+               </tr>
+            </table>
+            <div class="pageChooser">
+            </div>
+            <div>
+                검색 옵션<br>
+                작성자 ID: <input class="form-control" type="text" id="authorIdsearch"><br>
+                <select id="copyrightCheck">
+                    <option value="all">모든 게시물 검색하기</option>
+                    <option value="copyright">저작권 동의된 게시물만 보기</option>
+</select>
+  <br><br>
+                <button onclick="updateOption();" class="btn btn-primary">해당 옵션으로 검색하기</button>
+</div>
+         </div>
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="articleTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       
+      작성자: <span id="authorNick"></span>(<span id="authorId"></span>)<br />
+               업로드 날짜: <span id="uploaddate"></span><br>
+               [ 첨부파일 ]<br><span id="attachments"></span><br>
+               <div id="body"></div>
+               <br>
+               [ 댓글 ]<br><span id="content-area"><span class="cmlist"><span id="comments"></span></span></span><br>
+      </div>
+      <div class="modal-footer">
+               <button type="button" class="btn btn-default" data-dismiss="modal" style="width: 100%;">이전 페이지로 돌아가기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header  bg-warning">
+        <h5 class="modal-title">오류</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="errormodal">
+
+      </div>
+      <div class="modal-footer">
+               <button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+   </body>
+</html>
