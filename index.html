@@ -80,8 +80,14 @@
     display: none;
 }
 
-         @media (max-width: 800px){
+.mobileint{
+    display:none;
+}
 
+         @media (max-width: 800px){
+.mobileint{
+    display: table-cell;
+}
              .pageChooser{
                  font-size: 15px;
              }
@@ -182,7 +188,7 @@ $('.article').each(function() {
 });
 
 response.result.forEach(response => {
-    $("#articleList").append('<tr class="article"><td class="articleNum">' + response.id + '</td><td class="articleTitle"><a ' + (response.copyright != 1 ? 'class="nocopyright"' : "") + ' href="#' + response.id + '">' + response.title + '</a></td><td class="infoFrom">' + (response.source == 0 ? "자체수집" : "유령회원 정해준") + '</td><td><a href="#" onclick="setAuthor(\'' + response.authorId + '\');">' + response.authorNick + "</a></td><td>" + response.uploadDate + "</td></tr>");
+    $("#articleList").append('<tr class="article"><td class="articleNum">' + response.id + '</td><td class="articleTitle"><a ' + (response.copyright != 1 ? 'class="nocopyright"' : "") + ' href="#' + response.id + '">' + response.title + '</a></td><td class="infoFrom">' + (response.source == 0 ? "자체수집" : "유령회원 정해준") + '</td><td class="authorId"><a href="#" onclick="setAuthor(\'' + response.authorId + '\');">' + response.authorNick + '</a></td><td class="uploadDate">' + response.uploadDate + '</td><td class="mobileint"><a href="#" onclick="setAuthor(\'' + response.authorId + '\');">' + response.authorNick + '</a> / ' + response.uploadDate + '</td></tr>');
 
 });
 
